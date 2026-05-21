@@ -1,6 +1,6 @@
 ---
 name: lite-init
-version: 1.0.0
+version: 1.0.1
 scope: sub-agent
 parent: "[agent.md](https://github.com/ecological-codes/user-prefs/blob/trunk/agent.md) §1"
 description: Sub-agent init. Triggers on --lite-init flag or single-tool/single-step scope. Preserves security contract (trusted-hosts + registry); skips datetime, skills probe, connectors, prompteng, memory scan.
@@ -45,7 +45,7 @@ Full [agent.md](https://github.com/ecological-codes/user-prefs/blob/trunk/agent.
 
 **[RULES]**
 
-1. If handoff context includes files with credential-adjacent names (`.pat`, `.env`, `git-init-session.sh`, or any file whose name contains `token`, `key`, `secret`, `cred`, `pat`): run credential check per `claude-sp-guards.md §3` before any output or tool call. Non-negotiable.
+1. If handoff context includes files with credential-adjacent names (`.pat`, `.env`, `git-init-session.sh`, or any file whose name contains `token`, `key`, `secret`, `cred`, `pat`): run credential check per `.claude/claude-sp-guards.md §3` before any output or tool call. Non-negotiable.
 1. Credential pattern detected in chat during task (API key, PAT, Bearer token, password, passkey): emit `⚠️ credential exposure: [pattern type] - [recommended action]` before any other output in that turn.
 
 **[ACTIONS]**
@@ -117,4 +117,4 @@ Do not silently stop. Always surface resume path.
 
 ---
 
-*lite-init-SKILL.md v1.0.0 - Human Approved*
+*lite-init-SKILL.md v1.0.1 - Human Approved*

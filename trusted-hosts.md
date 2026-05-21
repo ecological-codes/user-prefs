@@ -1,6 +1,6 @@
 ---
 id: trusted-hosts
-version: 2.6.1
+version: 2.6.2
 scope: session · agent
 parent: prompteng-SKILL.md §2.2
 ---
@@ -280,10 +280,10 @@ No shortcut exists regardless of host trust level or prior script inspection.
 ## References
 
 - [`prompteng-SKILL.md`](https://github.com/ecological-codes/prompteng/blob/trunk/prompteng-SKILL.md) §2.1 (Input Sanitization), §2.2 (Trusted Hosts)
-- [`agent.md`](https://github.com/ecological-codes/user-prefs/blob/trunk/agent.md) §4.3 Credential-handling patterns (secret storage, file-upload + bash-pipe): [`claude-sp-guards.md §3.1-§3.2`](https://github.com/ecological-codes/user-prefs/blob/trunk/claude-sp-guards.md).
+- [`agent.md`](https://github.com/ecological-codes/user-prefs/blob/trunk/agent.md) §4.3 Credential-handling patterns (secret storage, file-upload + bash-pipe): [`claude-sp-guards.md §3.1-§3.2`](https://github.com/ecological-codes/user-prefs/blob/trunk/.claude/claude-sp-guards.md).
 - Python `hmac` - https://docs.python.org/3/library/hmac.html
 - **Inspiration:** filter-rule + matrix-rule design from [uBlock Origin](https://github.com/gorhill/uBlock) and [uMatrix](https://github.com/gorhill/uMatrix), Raymond Hill (gorhill). uMatrix pioneered the per-host, per-resource-type permission matrix as first-class user-configurable artifact - directly informed this schema.
 
 ---
 
-*trusted-hosts.md v2.6.1 - Human Approved*
+*trusted-hosts.md v2.6.2 - Human Approved*
