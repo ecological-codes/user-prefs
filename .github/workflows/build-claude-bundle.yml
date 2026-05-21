@@ -1,0 +1,40 @@
+name: build-claude-bundle
+
+# Regenerates .claude/claude.md whenever a source file changes on trunk.
+# .claude/claude.md is intentionally NOT in the paths filter, so the bot's
+# own commit does not retrigger this workflow.
+
+on:
+  push:
+    branches: [trunk]
+    paths:
+      - '.claude/claude-code-agent.md'
+      - 'agent.md'
+      - '.claude/claude-sp-guards.md'
+      - 'agent-prompt-discipline.md'
+      - '.claude/build-claude-bundle.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Regenerate .claude/claude.md
+        run: bash .claude/build-claude-bundle.sh
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- .claude/claude.md; then
+            echo "bundle already up to date"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .claude/claude.md
+          git commit -m "chore: regenerate .claude/claude.md bundle [skip ci]"
+          git push
