@@ -4,7 +4,7 @@
 # Scope: sessions working in the user-prefs repo (per-repo .claude/ config).
 #
 # This hook does mechanical prep only. It cannot enforce agent behavior;
-# Imperatives 1-4 and the init sequence are governed by CLAUDE.md / agent.md.
+# Imperatives 1-5 and the init sequence are governed by CLAUDE.md / agent.md.
 set -uo pipefail
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
@@ -30,6 +30,13 @@ else
   TRUSTED_HOSTS="absent"
 fi
 
+# git-init-session.sh presence (Imperative 5: git auth bootstrap).
+if [ -f "$PROJECT_DIR/git-init-session.sh" ]; then
+  GIT_INIT="present"
+else
+  GIT_INIT="absent"
+fi
+
 # System UTC datetime. Agent verifies drift against timeapi.io if egress permits.
 DT="$(date -u +%Y_%m_%d-%H%M%S)"
 
@@ -38,10 +45,15 @@ cat <<EOF
 datetime (system UTC, unverified): ${DT}
 integrity tool: ${HASH_TOOL}
 trusted-hosts.md: ${TRUSTED_HOSTS}
+git-init-session.sh: ${GIT_INIT}
 
 Agent actions:
 - Run the agent.md / CLAUDE.md section 0-1 init sequence.
 - Emit the 6-row init table before any substantive output.
-- Imperatives 1-4 are in effect; see CLAUDE.md.
+- Imperatives 1-5 are in effect; see CLAUDE.md.
+
+Git auth (Imperative 5): for any push/fetch, use ONE Bash call -
+  source ./git-init-session.sh "\$(cat <pat-file>)" && git push https://github.com/<org>/<repo>.git <branch>
+The git-push-guard.sh PreToolUse hook blocks pushes/fetches that skip the script.
 EOF
 exit 0

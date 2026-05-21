@@ -22,6 +22,15 @@ Active in every session working in this repo.
 4. No ephemerality caveats. Do not add "container is ephemeral" notes; it is
    understood.
 
+5. Git auth. Every `git push` / `git fetch` to a remote MUST be authenticated by
+   sourcing `git-init-session.sh` in the SAME Bash call as the git command
+   (Claude Code's Bash tool does not persist shell state between calls):
+   `source ./git-init-session.sh "$(cat <pat-file>)" && git push <url> <branch>`
+   Never write ad-hoc `/tmp` askpass scripts. Never embed the PAT in a remote
+   URL. Push to the explicit `https://github.com/<org>/<repo>.git` - `origin` is
+   the local proxy and denies ecological-codes writes. The `git-push-guard.sh`
+   PreToolUse hook blocks any push/fetch that skips the script.
+
 Imperative 2 + 3 combined: on a commit, show the message once and await
 approval; then hold silently - no re-notification.
 
@@ -45,8 +54,9 @@ sequence. The hook cannot enforce agent behavior - this file does.
 
 ## Files
 
-- `.claude/settings.json` - registers the SessionStart hook.
-- `.claude/hooks/session-init.sh` - mechanical init prep.
+- `.claude/settings.json` - registers hooks + Read deny rules.
+- `.claude/hooks/session-init.sh` - SessionStart: mechanical init prep.
+- `.claude/hooks/git-push-guard.sh` - PreToolUse(Bash): enforces Imperative 5.
 - `.claude/environment.env.template` - env-config reference; paste into the web
   UI. No secrets - see Imperative 1.
 
