@@ -69,7 +69,7 @@ Credential injected via uploaded file, piped into env var without echo. Lower ex
 
 **[RULES]**
 
-1. Unless a secret key manager or an authentication MCP server is integrated into the coding environment, use the PAT file-upload + bash-pipe pattern to reduce chances of credential leakage.
+1. Unless a secret key manager or an authentication MCP server is integrated into the coding environment, use the PAT file-upload + bash-pipe pattern to reduce chances of credential leakage. Exception - Claude Code web: do not use file-upload + bash-pipe there; uploaded files are auto-read into the session transcript (`agent.md §4.3`). In Claude Code web, supply the PAT as the `GITHUB_PAT` environment variable per `claude-code-agent.md` Imperative 5 instead.
 1. Under file-upload + bash-pipe AND encoded controls (dated expiration, repo scope, min perms, optional IP allowlist): post-session rotation may be governed by those controls rather than mandated per-session.
 1. Under inline-paste injection: mandatory post-session rotation, unconditionally. Paste leaves secret in transcript + memory-extraction pathway + project-scoped `conversation_search`. No PAT setting undoes transcript exposure.
 1. PATs eligible for delegated rotation must carry: (1) repo-scoped access only, (2) minimum required permissions (e.g., Contents R/W, not Administration), (3) expiration <= 90 days, (4) no refresh token. Flag immediately if violated.
