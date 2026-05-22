@@ -25,7 +25,15 @@ Active in every session working in this repo.
 5. Git auth. Every `git push` / `git fetch` to a remote MUST be authenticated by
    sourcing `git-init-session.sh` in the SAME Bash call as the git command
    (Claude Code's Bash tool does not persist shell state between calls):
-   `source ./git-init-session.sh "$(cat <pat-file>)" && git push <url> <branch>`
+   `source ./git-init-session.sh "$GITHUB_PAT" && git push <url> <branch>`
+   The PAT MUST reach the session only as a runtime environment variable
+   (`GITHUB_PAT`), set in the Claude Code web environment settings - never as an
+   uploaded, committed, or `cat`-ed file, never pasted in chat. Referencing
+   `"$GITHUB_PAT"` keeps the value out of the session transcript; a `.pat` file
+   does not (Claude Code web auto-reads uploaded files into the transcript - see
+   `agent.md §4.3`). Consistent with Imperative 1. The token must be a
+   short-lived, repo-scoped, minimum-permission fine-grained PAT; human user
+   manages its secrecy in the env panel (see `.claude/environment.env.template`).
    Never write ad-hoc `/tmp` askpass scripts. Never embed the PAT in a remote
    URL. Push to the explicit `https://github.com/<org>/<repo>.git` - `origin` is
    the local proxy and denies ecological-codes writes. The `git-push-guard.sh`
