@@ -171,4 +171,4 @@ Credential-handling patterns (secret storage, file-upload + bash-pipe): [`claude
 
 ---
 
-*agent.md v3.4.1 - Human Approved*
+*agent.md v3.4.2 - Human Approved*
