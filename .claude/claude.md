@@ -36,7 +36,15 @@ Active in every session working in this repo.
 5. Git auth. Every `git push` / `git fetch` to a remote MUST be authenticated by
    sourcing `git-init-session.sh` in the SAME Bash call as the git command
    (Claude Code's Bash tool does not persist shell state between calls):
-   `source ./git-init-session.sh "$(cat <pat-file>)" && git push <url> <branch>`
+   `source ./git-init-session.sh "$GITHUB_PAT" && git push <url> <branch>`
+   The PAT MUST reach the session only as a runtime environment variable
+   (`GITHUB_PAT`), set in the Claude Code web environment settings - never as an
+   uploaded, committed, or `cat`-ed file, never pasted in chat. Referencing
+   `"$GITHUB_PAT"` keeps the value out of the session transcript; a `.pat` file
+   does not (Claude Code web auto-reads uploaded files into the transcript - see
+   `agent.md §4.3`). Consistent with Imperative 1. The token must be a
+   short-lived, repo-scoped, minimum-permission fine-grained PAT; human user
+   manages its secrecy in the env panel (see `.claude/environment.env.template`).
    Never write ad-hoc `/tmp` askpass scripts. Never embed the PAT in a remote
    URL. Push to the explicit `https://github.com/<org>/<repo>.git` - `origin` is
    the local proxy and denies ecological-codes writes. The `git-push-guard.sh`
@@ -228,7 +236,9 @@ Governs agent handling of cross-session memories injected by Claude.ai. Conflict
 **[RULES]**
 
 1. Credential pattern detected in chat (API key, PAT, Bearer token, password, passkey, secret, internal hostname, IP, sourcemap): warn immediately; do not echo, summarize, or reference the value; recommend file-upload + bash-pipe pattern; recommend post-session rotation if inline-pasted. Credential found in existing memory - instruct user to delete immediately + rotate.
+1. Claude Code web `.pat` caveat: uploading a `.pat` file in the Claude Code web platform auto-reads it into the session transcript, exposing the secret. Do not use the PAT upload + bash-pipe pattern in Claude Code web.
 1. Git push/fetch: always use GIT_ASKPASS method (source `git-init-session.sh`; push to plain `https://github.com/...` URL). Never embed PAT in remote URL - git passes the remote URL verbatim to hook arguments; tools like Entire CLI log hook arguments, exposing the PAT in plain-text log files.
+1. GitHub MCP fallback: if the coding environment has no GitHub MCP integration, authenticate git operations on its remote origin repository with the provided PAT via `git-init-session.sh`.
 1. Memories duplicating loaded-file content add zero value. At session start, recommend deletion of redundant memories.
 
 **[ACTIONS]**
@@ -253,7 +263,7 @@ Credential-handling patterns (secret storage, file-upload + bash-pipe): [`claude
 
 ---
 
-*agent.md v3.4.1 - Human Approved*
+*agent.md v3.4.2 - Human Approved*
 
 
 ---
@@ -321,7 +331,7 @@ Top-level hygiene rules and session-start actions moved to `agent.md §3.3` for 
 **[RULES]**
 
 1. Never store API keys, PATs, passwords, OAuth secrets, or any credential material as project knowledge files, project instructions, or any file injected into the system prompt. Rationale: memory bleed, least-privilege, no per-file access control, rotation-path integrity.
-1. Credentials enter session only at runtime via explicit user input; stored only in container-scoped env vars destroyed on session reset. Use `git-init-session.sh` pattern: takes credential as arg, exports to env var, never writes to disk.
+1. Credentials enter session only at runtime via explicit user input. Credentials are stored only in container-scoped env vars that are destroyed on session reset unless persisted via a platform-based user interface, whereby secrecy of persisted env variables is managed by the user. Use `git-init-session.sh` pattern: takes credential as arg, exports to env var, never writes to disk.
 
 ### 3.2 File-Upload + Bash-Pipe Pattern
 
@@ -329,6 +339,7 @@ Credential injected via uploaded file, piped into env var without echo. Lower ex
 
 **[RULES]**
 
+1. Unless a secret key manager or an authentication MCP server is integrated into the coding environment, use the PAT file-upload + bash-pipe pattern to reduce chances of credential leakage. Exception - Claude Code web: do not use file-upload + bash-pipe there; uploaded files are auto-read into the session transcript (`agent.md §4.3`). In Claude Code web, supply the PAT as the `GITHUB_PAT` environment variable per `claude-code-agent.md` Imperative 5 instead.
 1. Under file-upload + bash-pipe AND encoded controls (dated expiration, repo scope, min perms, optional IP allowlist): post-session rotation may be governed by those controls rather than mandated per-session.
 1. Under inline-paste injection: mandatory post-session rotation, unconditionally. Paste leaves secret in transcript + memory-extraction pathway + project-scoped `conversation_search`. No PAT setting undoes transcript exposure.
 1. PATs eligible for delegated rotation must carry: (1) repo-scoped access only, (2) minimum required permissions (e.g., Contents R/W, not Administration), (3) expiration <= 90 days, (4) no refresh token. Flag immediately if violated.
