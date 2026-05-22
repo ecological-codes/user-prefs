@@ -61,7 +61,7 @@ Top-level hygiene rules and session-start actions moved to `agent.md §3.3` for 
 **[RULES]**
 
 1. Never store API keys, PATs, passwords, OAuth secrets, or any credential material as project knowledge files, project instructions, or any file injected into the system prompt. Rationale: memory bleed, least-privilege, no per-file access control, rotation-path integrity.
-1. Credentials enter session only at runtime via explicit user input; stored only in container-scoped env vars destroyed on session reset. Use `git-init-session.sh` pattern: takes credential as arg, exports to env var, never writes to disk.
+1. Credentials enter session only at runtime via explicit user input. Credentials are stored only in container-scoped env vars that are destroyed on session reset unless persisted via a platform-based user interface, whereby secrecy of persisted env variables is managed by the user. Use `git-init-session.sh` pattern: takes credential as arg, exports to env var, never writes to disk.
 
 ### 3.2 File-Upload + Bash-Pipe Pattern
 
