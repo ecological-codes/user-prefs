@@ -32,7 +32,7 @@ Active in every session working in this repo.
    `"$GITHUB_PAT"` keeps the value out of the session transcript; a `.pat` file
    does not (Claude Code web auto-reads uploaded files into the transcript - see
    `agent.md §4.3`). Consistent with Imperative 1. The token must be a
-   short-lived, repo-scoped, minimum-permission fine-grained PAT; the human
+   short-lived, repo-scoped, minimum-permission fine-grained PAT; human user
    manages its secrecy in the env panel (see `.claude/environment.env.template`).
    Never write ad-hoc `/tmp` askpass scripts. Never embed the PAT in a remote
    URL. Push to the explicit `https://github.com/<org>/<repo>.git` - `origin` is
