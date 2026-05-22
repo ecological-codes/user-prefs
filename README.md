@@ -57,17 +57,23 @@ Install into Skill Directory. Load on demand when task requires:
 - **[captureng](https://github.com/ecological-codes/captureng)** - session-knowledge capture, CHECKPOINT mode, three-mode write (CREATE / APPEND / CHECKPOINT)
 - **[packageng](https://github.com/ecological-codes/packageng)** - `.skill` archive creation, frontmatter validation, kit bundling
 - **[safe-skill-creator](https://github.com/ecological-codes/safe-skill-creator)** - skill design + iteration via four strategies: Processing, Mediation, Forgetting, Integrity
+- **[scribeng](https://github.com/ecological-codes/scribeng)** - agent scribe; Entire-compatible session checkpoint + sessionlog
+- **[export-memories](https://github.com/ecological-codes/export-memories)** - cross-session transcript synthesis
 
 ## Reference 
 
-- Deficiencies found in SP of:
+- Deficiencies found in System Prompt of:
   - [Sonnet 4.6](https://github.com/klaucious/rnd/blob/trunk/src/claude-sonnet_4_6-paraphrased_system_prompt-compact.md)
   - [Opus 4.7](https://github.com/klaucious/rnd/blob/trunk/doc/claude-opus_4_7-system_analysis.md)
-- Consider [Sponsoring this project](https://github.com/sponsors/ecological-codes) if you like it or find it useful: Analysis of Ecological Codes and Designs - [https://ecological.codes](https://ecological.codes)
+
+## Call to Action
+
+- **Consider [Sponsoring this project](https://github.com/sponsors/ecological-codes)** :heart: if you like it or find it useful.
+- See: Analysis of Ecological Codes and Designs - [https://ecological.codes](https://ecological.codes)
 
 ## License
 
 See [LICENSE](./LICENSE). (C) Copyright 2026 - Sameer Khan - Various and Several Rights Reserved.
 
 ---
-README.md v1.8.6 - Human Approved
+README.md v1.8.7 - Human Approved
