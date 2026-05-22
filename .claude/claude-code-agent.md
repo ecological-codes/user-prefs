@@ -41,7 +41,7 @@ Active in every session working in this repo.
    URL. `origin` is the local proxy; with the harness GitHub integration active
    it is authenticated and accepts pushes to any repository. When the
    integration is absent, push to the explicit
-   `https://github.com/<org>/<repo>.git` so the PAT authenticates directly. The
+   `https://github.com/<user_or_org>/<repo>.git` so the PAT authenticates directly. The
    `git-push-guard.sh` PreToolUse hook blocks any push/fetch that skips the
    script.
 
