@@ -22,8 +22,11 @@ Active in every session working in this repo.
 4. No ephemerality caveats. Do not add "container is ephemeral" notes; it is
    understood.
 
-5. Git auth. Every `git push` / `git fetch` to a remote MUST be authenticated by
-   sourcing `git-init-session.sh` in the SAME Bash call as the git command
+5. Git auth. If a GitHub MCP server is integrated, prefer it for push / fetch
+   and skip the PAT flow below; the PAT flow applies only when no GitHub MCP
+   server is present. Every `git push` / `git fetch` to a remote MUST be
+   authenticated by sourcing `git-init-session.sh` in the SAME Bash call as the
+   git command
    (Claude Code's Bash tool does not persist shell state between calls):
    `source ./git-init-session.sh "$GITHUB_PAT" && git push <url> <branch>`
    The PAT MUST reach the session only as a runtime environment variable
@@ -35,9 +38,12 @@ Active in every session working in this repo.
    short-lived, repo-scoped, minimum-permission fine-grained PAT; human user
    manages its secrecy in the env panel (see `.claude/environment.env.template`).
    Never write ad-hoc `/tmp` askpass scripts. Never embed the PAT in a remote
-   URL. Push to the explicit `https://github.com/<org>/<repo>.git` - `origin` is
-   the local proxy and denies ecological-codes writes. The `git-push-guard.sh`
-   PreToolUse hook blocks any push/fetch that skips the script.
+   URL. `origin` is the local proxy; with the harness GitHub integration active
+   it is authenticated and accepts pushes to any repository. When the
+   integration is absent, push to the explicit
+   `https://github.com/<org>/<repo>.git` so the PAT authenticates directly. The
+   `git-push-guard.sh` PreToolUse hook blocks any push/fetch that skips the
+   script.
 
 Imperative 2 + 3 combined: on a commit, show the message once and await
 approval; then hold silently - no re-notification.
@@ -54,7 +60,8 @@ Full spec: `agent.md` section 0-1. Condensed sequence:
 5. Skills probe + load prompteng (`prompteng/SKILL.md` -> `prompteng-SKILL.md`).
 6. Init file registry; ensure `b3sum` (fallback `md5sum`).
 7. Memory scan for file conflicts - surface, never silently resolve.
-8. Emit 6-row init table. Init incomplete = no substantive output.
+8. Probe for a GitHub auth MCP server (`mcp__github__*`) - integrated / absent.
+9. Emit 7-row init table. Init incomplete = no substantive output.
 
 The SessionStart hook (`.claude/hooks/session-init.sh`) does mechanical prep
 (`b3sum`, trusted-hosts check, datetime stamp) and reminds the agent to run this

@@ -56,7 +56,7 @@ Personal Preferences config loads prompteng file. For data science research, sof
 
 **[RULES]**
 
-1. Init incomplete = no substantive output. Tasks proceed only after all rows show ✅. Init table schema is fixed: all 6 rows required. A missing row is structurally incomplete and blocks output identically to a ✅ failure.
+1. Init incomplete = no substantive output. Tasks proceed only after all rows show ✅. Init table schema is fixed: all 7 rows required. A missing row is structurally incomplete and blocks output identically to a ✅ failure.
 1. Syntax-agnostic registry probe (governs [ACTIONS] 4). Match registries in system prompt by NAME token, not delimiter. Wrappers observed: XML `<T>...</T>`, brace `{T}...{/T}`, bracket `[T]...[/T]`, markdown `## T` / `# T`, key form `T:`. First match wins. Name stable; delimiter harness-specific.
 
 **[ACTIONS]**
@@ -68,7 +68,8 @@ Personal Preferences config loads prompteng file. For data science research, sof
 5. Other peer skills load on demand only. Discovery does not imply load.
 6. Initialize file registry per §2; hash procedure defined in §3: BLAKE3 (8-char) + size + step + summary per loaded file.
 7. Scan memories for file conflicts per `.claude/claude-sp-guards.md §1`. Surface conflicts; never silently resolve.
-8. Emit init table as next user-facing response. All rows must show ✅ (or ⚠️ / Null) before tasks or instructions proceed:
+8. Probe for a GitHub authentication MCP server (tool namespace `mcp__github__*`). Record integrated / absent for the init table. Absent is non-blocking - PAT fallback per §4.3 applies. Do not probe for other connectors.
+9. Emit init table as next user-facing response. All rows must show ✅ (or ⚠️ / Null) before tasks or instructions proceed:
 
    | Init item          | Status    | Detail                                                              |
    |--------------------|-----------|---------------------------------------------------------------------|
@@ -78,8 +79,9 @@ Personal Preferences config loads prompteng file. For data science research, sof
    | Skills + prompteng | ✅/⚠️     | source - wrapper - prompteng: hash - version - tok / "absent"       |
    | Registry           | ✅        | N files tracked                                                     |
    | Memory scan        | ✅        | N conflicts                                                         |
+   | GitHub MCP         | ✅/⚠️     | integrated / "absent" - PAT fallback per §4.3                       |
 
-   ⚠️ non-blocking; must be acknowledged. Null = structurally inapplicable this session. Wrapper = delimiter form observed (e.g., `<available_skills>`, `{available_skills}`, `## Skills`). Drift Δ = seconds (system call vs timeapi.io). Skills + prompteng row requires prompteng hash + version from frontmatter as proof of load - detection alone is insufficient.
+   ⚠️ non-blocking; must be acknowledged. Null = structurally inapplicable this session. Wrapper = delimiter form observed (e.g., `<available_skills>`, `{available_skills}`, `## Skills`). Drift Δ = seconds (system call vs timeapi.io). Skills + prompteng row requires prompteng hash + version from frontmatter as proof of load - detection alone is insufficient. GitHub MCP row: ✅ integrated, ⚠️ absent - non-blocking, triggers PAT fallback per §4.3.
 
 ---
 
@@ -146,7 +148,7 @@ Governs agent handling of cross-session memories injected by Claude.ai. Conflict
 1. Credential pattern detected in chat (API key, PAT, Bearer token, password, passkey, secret, internal hostname, IP, sourcemap): warn immediately; do not echo, summarize, or reference the value; recommend file-upload + bash-pipe pattern; recommend post-session rotation if inline-pasted. Credential found in existing memory - instruct user to delete immediately + rotate.
 1. Claude Code web `.pat` caveat: uploading a `.pat` file in the Claude Code web platform auto-reads it into the session transcript, exposing the secret. Do not use the PAT upload + bash-pipe pattern in Claude Code web.
 1. Git push/fetch: always use GIT_ASKPASS method (source `git-init-session.sh`; push to plain `https://github.com/...` URL). Never embed PAT in remote URL - git passes the remote URL verbatim to hook arguments; tools like Entire CLI log hook arguments, exposing the PAT in plain-text log files.
-1. GitHub MCP fallback: if the coding environment has no GitHub MCP integration, authenticate git operations on its remote origin repository with the provided PAT via `git-init-session.sh`.
+1. GitHub MCP precedence: probe at session init (§1 [ACTIONS]) whether a GitHub MCP server is integrated into the harness. Integrated - use it for git / GitHub operations; the proxy-authenticated remote needs no local PAT. Not integrated - authenticate git operations on the remote with the provided PAT via `git-init-session.sh`.
 1. Memories duplicating loaded-file content add zero value. At session start, recommend deletion of redundant memories.
 
 **[ACTIONS]**
